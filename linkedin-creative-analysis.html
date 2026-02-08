@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Creative Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #fbf7f4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(49, 119, 115, 0.1);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #317773;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      color: #333;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #317773;
+      box-shadow: 0 0 0 3px rgba(49, 119, 115, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .file-upload {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .file-upload:hover {
+      border-color: #317773;
+      background-color: rgba(49, 119, 115, 0.02);
+    }
+
+    .file-upload.dragover {
+      border-color: #317773;
+      background-color: rgba(49, 119, 115, 0.05);
+    }
+
+    .file-upload.has-file {
+      border-color: #317773;
+      border-style: solid;
+      background-color: rgba(49, 119, 115, 0.05);
+    }
+
+    .file-upload-icon {
+      color: #317773;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-upload-text {
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    .file-upload-text strong {
+      color: #317773;
+    }
+
+    .file-name {
+      color: #317773;
+      font-weight: 500;
+      font-size: 0.9rem;
+      word-break: break-all;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background-color: #317773;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #285f5c;
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.98);
+    }
+
+    button[type="submit"]:disabled {
+      background-color: #999;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background-color: rgba(49, 119, 115, 0.1);
+      color: #317773;
+    }
+
+    .status.error {
+      display: block;
+      background-color: #fef2f2;
+      color: #dc2626;
+    }
+
+    .advanced-section {
+      margin-bottom: 1.5rem;
+      border: 1px solid #eee;
+      border-radius: 8px;
+    }
+
+    .advanced-section summary {
+      padding: 0.875rem 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .advanced-section summary:hover {
+      color: #317773;
+    }
+
+    .advanced-section[open] summary {
+      border-bottom: 1px solid #eee;
+    }
+
+    .advanced-content {
+      padding: 1rem;
+    }
+
+    .advanced-content .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .advanced-content input[type="text"],
+    .advanced-content textarea {
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LinkedIn Creative Analysis</h1>
+    <p class="subtitle">Upload LinkedIn ad performance CSV for analysis</p>
+
+    <form id="analysisForm">
+      <div class="form-group">
+        <label for="clientName">Client Name</label>
+        <input type="text" id="clientName" name="clientName" placeholder="e.g. Acme Corp" required>
+      </div>
+
+      <div class="form-group">
+        <label for="csvFile">Ad Performance CSV</label>
+        <div class="file-upload" id="fileUploadArea">
+          <div class="file-upload-icon">↑</div>
+          <div class="file-upload-text">
+            <strong>Click to upload</strong> or drag and drop<br>
+            CSV exported from LinkedIn Campaign Manager
+          </div>
+        </div>
+        <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+      </div>
+
+      <details class="advanced-section">
+        <summary>I know what I'm doing</summary>
+        <div class="advanced-content">
+          <div class="form-group">
+            <label for="instructions">Additional Instructions</label>
+            <textarea id="instructions" name="instructions" placeholder="e.g. Focus on video completion rates..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="webhookUrl">Relay Webhook URL</label>
+            <input type="text" id="webhookUrl" name="webhookUrl" value="https://hook.relay.app/api/v1/playbook/cmlbh6duy0r6i0qko7qhy66u2/trigger/-fYOVfqpYve3xKUMfK1mtQ">
+          </div>
+        </div>
+      </details>
+
+      <button type="submit" id="submitBtn">Submit for Analysis</button>
+
+      <div class="status" id="status"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('analysisForm');
+    const fileInput = document.getElementById('csvFile');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const submitBtn = document.getElementById('submitBtn');
+    const status = document.getElementById('status');
+
+    // File upload handling
+    fileUploadArea.addEventListener('click', () => fileInput.click());
+
+    fileUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.add('dragover');
+    });
+
+    fileUploadArea.addEventListener('dragleave', () => {
+      fileUploadArea.classList.remove('dragover');
+    });
+
+    fileUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length && files[0].name.endsWith('.csv')) {
+        fileInput.files = files;
+        updateFileDisplay(files[0].name);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        updateFileDisplay(fileInput.files[0].name);
+      }
+    });
+
+    function updateFileDisplay(fileName) {
+      fileUploadArea.classList.add('has-file');
+      fileUploadArea.innerHTML = `<div class="file-name">📄 ${fileName}</div>`;
+    }
+
+    // Column mapping to camelCase (Maintained your whitelist)
+    const COLUMN_MAP = {
+      'account name': 'accountName',
+      'currency': 'currency',
+      'campaign group id': 'campaignGroupId',
+      'campaign group name': 'campaignGroupName',
+      'campaign group status': 'campaignGroupStatus',
+      'campaign id': 'campaignId',
+      'campaign name': 'campaignName',
+      'campaign objective': 'campaignObjective',
+      'campaign type': 'campaignType',
+      'campaign status': 'campaignStatus',
+      'creative name': 'creativeName',
+      'ad id': 'adId',
+      'creative status': 'creativeStatus',
+      'ad introduction text': 'adIntroductionText',
+      'ad headline': 'adHeadline',
+      'ad line': 'adLine',
+      'click url': 'clickUrl',
+      'impressions': 'impressions',
+      'clicks': 'clicks',
+      'clicks to landing page': 'lpClicks', // Updated to match LinkedIn's full string
+      'clicks to linkedin page': 'liPageClicks',
+      'total spent': 'cost',
+      'total engagements': 'totalEngagements',
+      'conversions': 'conversions',
+      'leads': 'leads',
+      'reach': 'reach',
+      'average frequency': 'frequency',
+      'cost per 1,000 people reached': 'cpm',
+      'average dwell time (in seconds)': 'dwellTime',
+      'sends': 'sends',
+      'opens': 'opens',
+      'button clicks': 'buttonClicks',
+      'banner clicks': 'bannerClicks',
+      'lead forms opened': 'leadFormOpened'
+    };
+
+    const BASE_COLUMNS = [
+      'accountName', 'currency', 'campaignGroupId', 'campaignGroupName', 
+      'campaignGroupStatus', 'campaignId', 'campaignName', 'campaignObjective',
+      'campaignType', 'campaignStatus', 'creativeName', 'adId', 'creativeStatus'
+    ];
+
+    const SPONSORED_UPDATE_COLUMNS = [
+      'adIntroductionText', 'adHeadline', 'adLine', 'clickUrl', 'impressions',
+      'clicks', 'lpClicks', 'liPageClicks', 'cost', 'totalEngagements',
+      'conversions', 'leads', 'reach', 'frequency', 'cpm', 'dwellTime'
+    ];
+
+    const SPONSORED_MESSAGING_COLUMNS = [
+      'sends', 'opens', 'buttonClicks', 'bannerClicks', 'lpClicks',
+      'leadFormOpened', 'leads', 'cost'
+    ];
+
+    function normalizeHeader(header) {
+      const cleaned = header.trim().toLowerCase();
+      return COLUMN_MAP[cleaned] || null;
+    }
+
+    function parseNumber(value) {
+      if (value === null || value === undefined || value === '') return null;
+      const cleaned = value.toString().replace(/[$€£,\s%]/g, '');
+      if (cleaned === '' || cleaned === '-') return null;
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? null : num;
+    }
+
+    // FIX: Added delimiter detection
+    function parseCSVLine(line, delimiter) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === delimiter && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current);
+      return result;
+    }
+
+    function extractMetadata(lines) {
+  const metadata = {
+    startDate: null,
+    endDate: null,
+    generatedDate: null
+  };
+
+  function formatToISO(val) {
+    if (!val) return null;
+    
+    // 1. Remove surrounding quotes and the "(in UTC)" text
+    // 2. Trim whitespace
+    const cleaned = val.replace(/"/g, '').replace(/\(in UTC\)/i, '').trim();
+    
+    // 3. Try to parse the date
+    const d = new Date(cleaned);
+    
+    // 4. If valid, return YYYY-MM-DD. If not, return the cleaned string as a fallback.
+    if (!isNaN(d.getTime())) {
+      return d.toISOString().split('T')[0];
+    }
+    return cleaned;
+  }
+
+  // Scan the first 15 lines
+  for (let i = 0; i < Math.min(15, lines.length); i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // Check for keywords and capture everything AFTER the first colon
+    if (line.toLowerCase().includes('report start')) {
+      const value = line.substring(line.indexOf(':') + 1);
+      metadata.startDate = formatToISO(value);
+    } 
+    else if (line.toLowerCase().includes('report end')) {
+      const value = line.substring(line.indexOf(':') + 1);
+      metadata.endDate = formatToISO(value);
+    } 
+    else if (line.toLowerCase().includes('date generated')) {
+      const value = line.substring(line.indexOf(':') + 1);
+      metadata.generatedDate = formatToISO(value);
+    }
+  }
+
+  return metadata;
+}
+
+    function findHeaderRowIndex(lines) {
+      const headerIndicators = ['campaign name', 'impressions', 'clicks', 'creative name', 'start date (in utc)'];
+      for (let i = 0; i < Math.min(15, lines.length); i++) {
+        const lineLower = lines[i].toLowerCase();
+        const matches = headerIndicators.filter(h => lineLower.includes(h));
+        if (matches.length >= 2) return i;
+      }
+      return -1;
+    }
+
+    function parseCSV(text) {
+      // Handle multi-line quoted fields by pre-processing
+      const rows = [];
+      let currentRow = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        
+        if (char === '"') {
+          inQuotes = !inQuotes;
+          currentRow += char;
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          // End of row (only if not inside quotes)
+          if (currentRow.trim()) {
+            rows.push(currentRow);
+          }
+          currentRow = '';
+          // Skip \r\n as single newline
+          if (char === '\r' && text[i + 1] === '\n') {
+            i++;
+          }
+        } else {
+          currentRow += char;
+        }
+      }
+      // Don't forget the last row
+      if (currentRow.trim()) {
+        rows.push(currentRow);
+      }
+
+      const headerRowIndex = findHeaderRowIndex(rows);
+      
+      if (headerRowIndex === -1) {
+        return { metadata: {}, adStats: {}, error: 'Could not find column headers in CSV' };
+      }
+
+      // FIX: Check for tabs in the header row
+      const delimiter = rows[headerRowIndex].includes('\t') ? '\t' : ',';
+      
+      const metadata = extractMetadata(rows, delimiter);
+      const rawHeaders = parseCSVLine(rows[headerRowIndex], delimiter);
+      const headerMapping = rawHeaders.map(h => normalizeHeader(h));
+      const campaignTypeIndex = headerMapping.indexOf('campaignType');
+
+      const adStats = {};
+
+      for (let i = headerRowIndex + 1; i < rows.length; i++) {
+        if (!rows[i].trim()) continue;
+        
+        const values = parseCSVLine(rows[i], delimiter);
+        let campaignType = 'Other';
+        if (campaignTypeIndex !== -1 && values[campaignTypeIndex]) {
+          campaignType = values[campaignTypeIndex].trim();
+        }
+
+        let columnsToInclude = [...BASE_COLUMNS];
+        if (campaignType === 'Sponsored Update') {
+          columnsToInclude = [...BASE_COLUMNS, ...SPONSORED_UPDATE_COLUMNS];
+        } else if (campaignType === 'Sponsored Messaging') {
+          columnsToInclude = [...BASE_COLUMNS, ...SPONSORED_MESSAGING_COLUMNS];
+        }
+
+        const row = {};
+        headerMapping.forEach((normalizedName, index) => {
+          if (normalizedName && columnsToInclude.includes(normalizedName) && values[index] !== undefined) {
+            const value = values[index].trim();
+            const numericColumns = [
+              'impressions', 'clicks', 'lpClicks', 'liPageClicks', 'cost',
+              'totalEngagements', 'conversions', 'leads', 'reach', 'frequency',
+              'cpm', 'dwellTime', 'sends', 'opens', 'buttonClicks', 'bannerClicks',
+              'leadFormOpened'
+            ];
+            
+            if (numericColumns.includes(normalizedName)) {
+              row[normalizedName] = parseNumber(value);
+            } else {
+              row[normalizedName] = value || null;
+            }
+          }
+        });
+
+        if (Object.keys(row).length > 0) {
+          if (!adStats[campaignType]) adStats[campaignType] = [];
+          adStats[campaignType].push(row);
+        }
+      }
+
+      return { metadata, adStats, error: null };
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const webhookUrl = document.getElementById('webhookUrl').value.trim();
+      const clientName = document.getElementById('clientName').value.trim();
+      const instructions = document.getElementById('instructions').value.trim();
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showStatus('Please upload a CSV file', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      try {
+        const text = await file.text();
+        const { metadata, adStats, error } = parseCSV(text);
+
+        if (error) throw new Error(error);
+
+        const totalAds = Object.values(adStats).reduce((sum, arr) => sum + arr.length, 0);
+        if (totalAds === 0) throw new Error('No valid ad data found in CSV. Check if your column names match the whitelist.');
+
+        // Convert adStats object to array for easier iteration in Relay
+        const adStatsArray = Object.entries(adStats).map(([campaignType, ads]) => ({
+          campaignType,
+          ads
+        }));
+
+        const payload = {
+          metadata: {
+            clientName: clientName,
+            additionalInstructions: instructions || null,
+            startDate: metadata.startDate,
+            endDate: metadata.endDate,
+            generatedDate: metadata.generatedDate
+          },
+          adStats: adStatsArray
+        };
+
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`Webhook returned ${response.status}`);
+
+        const campaignTypes = Object.keys(adStats).join(', ');
+        showStatus(`Submitted ${totalAds} ads (${campaignTypes}) for ${clientName}.`, 'success');
+
+      } catch (err) {
+        showStatus(`Error: ${err.message}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit for Analysis';
+      }
+    });
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = `status ${type}`;
+    }
+
+  </script>
+</body>
+</html>
